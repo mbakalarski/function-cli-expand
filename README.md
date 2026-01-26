@@ -34,12 +34,27 @@ crossplane xpkg build -f package --embed-runtime-image=runtime
 ## Get AVD example design
 
 ```
+pipx install ansible-core
+```
+
+```
+_cdir=$(pwd)
 git clone --filter=blob:none --no-checkout https://github.com/aristanetworks/avd.git
 cd avd
 git sparse-checkout set \
 ansible_collections/arista/avd/examples/single-dc-l3ls/group_vars
-git checkout devel
+git checkout v5.7.2
 ```
+
+```
+cd ansible_collections/arista/avd/examples/single-dc-l3ls
+ansible-inventory inventory.yml --list > single-dc-l3ls.json
+mv single-dc-l3ls.json $_cdir
+cd $_cdir
+cat single-dc-l3ls.json | yq -pj -oy
+```
+
+
 
 
 ## License
