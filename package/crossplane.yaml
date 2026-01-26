@@ -1,0 +1,14 @@
+apiVersion: meta.pkg.crossplane.io/v1beta1
+kind: Function
+metadata:
+  name: function-avd
+  annotations:
+    meta.crossplane.io/source: https://github.com/mbakalarski/function-avd
+    meta.crossplane.io/license: Apache-2.0
+    meta.crossplane.io/description: Generates EosCommand resources for Arista EOS devices.
+    meta.crossplane.io/readme: |
+      This Crossplane composition function generates resources for interacting with Arista EOS devices via JSON-RPC.
+      It is intended for use with netclab-xp configuration package to manage device configuration automatically.
+spec:
+  crossplane:
+    version: ">=v2.1.1"
