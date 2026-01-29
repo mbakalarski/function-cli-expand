@@ -1,0 +1,13 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: cliconfigs
+spec:
+  compositeTypeRef:
+    apiVersion: netclab.dev/v1alpha1
+    kind: CliConfig
+  mode: Pipeline
+  pipeline:
+  - step: create-clicommands-from-dynamic-config
+    functionRef:
+      name: function-cli-explode
