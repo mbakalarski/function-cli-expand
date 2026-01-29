@@ -1,14 +1,14 @@
 apiVersion: meta.pkg.crossplane.io/v1beta1
 kind: Function
 metadata:
-  name: function-avd
+  name: function-cli-explode
   annotations:
-    meta.crossplane.io/source: https://github.com/mbakalarski/function-avd
+    meta.crossplane.io/source: https://github.com/mbakalarski/function-cli-explode
     meta.crossplane.io/license: Apache-2.0
-    meta.crossplane.io/description: Generates EosCommand resources for Arista EOS devices.
+    meta.crossplane.io/description: Generates CliCommand resources.
     meta.crossplane.io/readme: |
-      This Crossplane composition function generates resources for interacting with Arista EOS devices via JSON-RPC.
-      It is intended for use with netclab-xp configuration package to manage device configuration automatically.
+      This Crossplane composition function generates CliCommand resources.
+      It is intended for use with configuration packages to manage device configuration automatically.
 spec:
   crossplane:
     version: ">=v2.1.1"
