@@ -16,13 +16,13 @@
 """A Crossplane composition function."""
 
 import hashlib
-import json
 
 import grpc
 from crossplane.function import logging, request, resource, response
 from crossplane.function.proto.v1 import run_function_pb2 as fnv1
 from crossplane.function.proto.v1 import run_function_pb2_grpc as grpcv1
-from jsonrpcclient import request_json
+
+from ._buildtree import build_tree
 
 JSONRPC_BASE = {"version": 1, "format": "json"}
 
@@ -43,11 +43,11 @@ class FunctionRunner(grpcv1.FunctionRunnerService):
 
         rsp = response.to(req)
 
-        observed_xr = resource.struct_to_dict(req.observed.observed_xr.resource)
-        name_prefix = observed_xr["metadata"].get("name")
+        observed_xr = resource.struct_to_dict(req.observed.composite.resource)
+        observed_xr_name = observed_xr["metadata"].get("name")
         fqdn = observed_xr["spec"].get("endpoint")
         config_ref = observed_xr["spec"].get("configMapRef")
-        config_name = config_ref.get("name")
+        configmap_name = config_ref.get("name")
         namespace = config_ref.get("namespace", "default")
 
         response.require_resources(
@@ -55,28 +55,33 @@ class FunctionRunner(grpcv1.FunctionRunnerService):
             name="dynamic-config",
             api_version="v1",
             kind="ConfigMap",
-            match_name=config_name,
+            match_name=configmap_name,
             namespace=namespace,
         )
 
-        config_map = request.get_required_resource(req, "dynamic-config")
+        configmap = request.get_required_resource(req, "dynamic-config")
 
-        if not config_map:
-            return
-        
-        full_config: str = config_map.get("data", {}).get("cmdlines", " ")
+        if not configmap:
+            response.warning(
+                rsp,
+                f"Required ConfigMap {configmap_name} not found",
+            )
+            return rsp
 
-        trees = build_trees(full_config)
+        device_config: str = configmap.get("data", {}).get("cmdlines", "")
 
-        for tree in trees:
-            path = path_from_tree(tree)
-            name = name_prefix + "-" + name_from_path(path)
+        tree = build_tree(device_config)
 
-            path_log = log.bind(resource=name, path=" | ".join(path))
+        for toplevel_cmd, nested_cmd in tree.items():
+            name = hashed_name(f"{observed_xr_name}-{namespace}", toplevel_cmd)
+
+            path_log = log.bind(resource=name)
             path_log.debug("Creating resource")
 
-            source = construct_clicommand_resource(fqdn, tree)
-            
+            source = construct_clicommand_resource(
+                name, fqdn, {toplevel_cmd: nested_cmd}
+            )
+
             resource.update(
                 rsp.desired.resources[name],
                 source,
@@ -85,25 +90,21 @@ class FunctionRunner(grpcv1.FunctionRunnerService):
         return rsp
 
 
-def path_from_tree() -> list[str]:
-    pass
+def hashed_name(prefix, name: str) -> str:
+    """hashed_name function."""
+    suffix = hashlib.sha256(name.encode("utf-8"), usedforsecurity=False).hexdigest()
+    full = f"{prefix}-{suffix}"
+    return full[:253].rstrip("-")
 
 
-def build_trees(config: str):
-    pass
-
-
-def name_from_path(path: list[str]) -> str:
-    """name_from_path function."""
-    joined = "|".join(path)
-    return hashlib.sha1(joined.encode(), usedforsecurity=False).hexdigest()[:10]
-
-
-def construct_clicommand_resource(fqdn: str, tree: dict) -> dict:
+def construct_clicommand_resource(name: str, fqdn: str, tree: dict) -> dict:
     """Construct the CliCommand resource."""
     return {
         "apiVersion": "netclab.dev/v1alpha1",
         "kind": "CliCommand",
+        "metadata": {
+            "name": name,
+        },
         "spec": {
             "endpoint": fqdn,
             "removeContainer": False,

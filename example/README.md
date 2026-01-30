@@ -18,7 +18,7 @@ CONFIGMAP_NAME=ceos01-cm
 
 URL="https://raw.githubusercontent.com/aristanetworks/avd/${AVD_COMMIT}/ansible_collections/arista/avd/examples/${AVD_DESIGN}/intended/configs/${DEVICE_HOSTNAME}.cfg"
 
-crossplane render xr.yaml composition.yaml functions.yaml
+crossplane render xr.yaml composition.yaml functions.yaml \
   --required-resources \
     <(kubectl create configmap $CONFIGMAP_NAME --from-file=cmdlines=<(curl -sf "$URL") --dry-run=client -o yaml) \
   -r
