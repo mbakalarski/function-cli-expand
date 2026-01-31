@@ -1,36 +1,36 @@
 from collections import OrderedDict
 
-from shconfparser import Parser
+from shconfparser import Parser, TreeParseResult
 
 
 class TreeBuildError(Exception):
     """Raised when input data is invalid or processing failed."""
 
-    pass
-
 
 def _replace_empty_strings_inplace(d):
-    """Recursively replace all empty string values ('') with empty dicts ({})."""
+    """Recursively replace all empty string values with empty OrderedDicts."""
     for k, v in d.items():
         if v == "":
-            d[k] = {}
+            d[k] = OrderedDict()
         elif isinstance(v, dict):
             _replace_empty_strings_inplace(v)
 
 
-def build_tree(multiline_text: str) -> OrderedDict:
+def build_tree(multiline_text: str):
     """Parse multiline text into nested dictionary structure."""
+    if not multiline_text.strip():
+        msg = "Input text is empty"
+        raise TreeBuildError(msg)
+
     lines = multiline_text.splitlines()
+    parser = Parser()
 
-    p = Parser()
-    tree_parse_result = p.parse_tree_safe(lines)
+    result: TreeParseResult = parser.parse_tree_safe(lines)
 
-    if tree_parse_result.success:
-        tree = tree_parse_result.data
-    else:
-        err_msg = "No valid data or processing failed"
-        raise TreeBuildError(err_msg)
+    if not result.success or result.data is None:
+        msg = "No valid data or processing failed"
+        raise TreeBuildError(msg)
 
+    tree = result.data
     _replace_empty_strings_inplace(tree)
-
-    return OrderedDict(tree)
+    return tree
