@@ -98,9 +98,6 @@ class TestFunctionRunner(unittest.IsolatedAsyncioTestCase):
             and not line.startswith("!")
             and not line.startswith("end")
         ]
-        namespace = (
-            composite["spec"].get("configMapRef", {}).get("namespace", "default")
-        )
 
         # Number of generated resources matches
         self.assertEqual(
@@ -113,7 +110,7 @@ class TestFunctionRunner(unittest.IsolatedAsyncioTestCase):
         )
 
         for cmd in top_level_commands:
-            name = fn.hashed_name(composite['metadata']['name'], cmd)
+            name = fn.hashed_name(composite["metadata"]["name"], cmd)
 
             # Top-level command has a corresponding resource
             self.assertIn(
