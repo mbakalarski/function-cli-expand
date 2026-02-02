@@ -73,7 +73,7 @@ class FunctionRunner(grpcv1.FunctionRunnerService):
         tree = build_tree(device_config)
 
         for toplevel_cmd, nested_cmd in tree.items():
-            name = hashed_name(f"{observed_xr_name}-{namespace}", toplevel_cmd)
+            name = hashed_name(observed_xr_name, toplevel_cmd)
 
             path_log = log.bind(resource=name)
             path_log.debug("Creating resource")
@@ -93,8 +93,8 @@ class FunctionRunner(grpcv1.FunctionRunnerService):
 def hashed_name(prefix, name: str) -> str:
     """hashed_name function."""
     suffix = hashlib.sha256(name.encode("utf-8"), usedforsecurity=False).hexdigest()
-    full = f"{prefix}-{suffix}"
-    return full[:253].rstrip("-")
+    full = f"{prefix[:15]}-{suffix[:48]}"
+    return full.rstrip("-")[:63]
 
 
 def construct_cliconfig_resource(name: str, fqdn: str, tree: dict) -> dict:

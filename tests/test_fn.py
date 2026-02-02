@@ -113,7 +113,7 @@ class TestFunctionRunner(unittest.IsolatedAsyncioTestCase):
         )
 
         for cmd in top_level_commands:
-            name = fn.hashed_name(f"{composite['metadata']['name']}-{namespace}", cmd)
+            name = fn.hashed_name(composite['metadata']['name'], cmd)
 
             # Top-level command has a corresponding resource
             self.assertIn(
