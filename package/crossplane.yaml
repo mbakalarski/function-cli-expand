@@ -1,13 +1,13 @@
 apiVersion: meta.pkg.crossplane.io/v1beta1
 kind: Function
 metadata:
-  name: function-cli-explode
+  name: function-cli-expand
   annotations:
-    meta.crossplane.io/source: https://github.com/mbakalarski/function-cli-explode
+    meta.crossplane.io/source: https://github.com/mbakalarski/function-cli-expand
     meta.crossplane.io/license: Apache-2.0
-    meta.crossplane.io/description: Generates CliCommand resources.
+    meta.crossplane.io/description: Generates CliConfig resources.
     meta.crossplane.io/readme: |
-      This Crossplane composition function generates CliCommand resources.
+      This Crossplane composition function generates CliConfig resources.
       It is intended for use with configuration packages to manage device configuration automatically.
 spec:
   crossplane:

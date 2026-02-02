@@ -1,6 +1,6 @@
-## function-cli-explode
+## function-cli-expand
 
-This Crossplane composition function generates CliCommand resources.<br>
+This Crossplane composition function generates CliConfig resources.<br>
 It is intended for use with configuration packages to manage device configuration automatically.
 
 

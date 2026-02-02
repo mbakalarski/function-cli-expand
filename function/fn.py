@@ -78,7 +78,7 @@ class FunctionRunner(grpcv1.FunctionRunnerService):
             path_log = log.bind(resource=name)
             path_log.debug("Creating resource")
 
-            source = construct_clicommand_resource(
+            source = construct_cliconfig_resource(
                 name, fqdn, {toplevel_cmd: nested_cmd}
             )
 
@@ -97,11 +97,11 @@ def hashed_name(prefix, name: str) -> str:
     return full[:253].rstrip("-")
 
 
-def construct_clicommand_resource(name: str, fqdn: str, tree: dict) -> dict:
-    """Construct the CliCommand resource."""
+def construct_cliconfig_resource(name: str, fqdn: str, tree: dict) -> dict:
+    """Construct the CliConfig resource."""
     return {
         "apiVersion": "netclab.dev/v1alpha1",
-        "kind": "CliCommand",
+        "kind": "CliConfig",
         "metadata": {
             "name": name,
         },

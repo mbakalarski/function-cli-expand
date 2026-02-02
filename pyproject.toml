@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "function-cli-explode"
+name = "function-cli-expand"
 description = 'A composition function'
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
@@ -30,9 +30,9 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-Documentation = "https://github.com/mbakalarski/function-cli-explode#readme"
-Issues = "https://github.com/mbakalarski/function-cli-explode/issues"
-Source = "https://github.com/mbakalarski/function-cli-explode"
+Documentation = "https://github.com/mbakalarski/function-cli-expand#readme"
+Issues = "https://github.com/mbakalarski/function-cli-expand/issues"
+Source = "https://github.com/mbakalarski/function-cli-expand"
 
 [project.scripts]
 function = "function.main:cli"

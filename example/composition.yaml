@@ -5,9 +5,9 @@ metadata:
 spec:
   compositeTypeRef:
     apiVersion: netclab.dev/v1alpha1
-    kind: CliConfig
+    kind: CliConfigSource
   mode: Pipeline
   pipeline:
-  - step: create-clicommands-from-dynamic-config
+  - step: create-cliconfigs-from-dynamic-config
     functionRef:
-      name: function-cli-explode
+      name: function-cli-expand

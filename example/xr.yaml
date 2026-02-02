@@ -1,10 +1,10 @@
 apiVersion: netclab.dev/v1alpha1
-kind: CliConfig
+kind: CliConfigSource
 metadata:
   name: ceos01-cliconfig
 spec:
+  version: 1
   endpoint: ceos01.default.svc.cluster.local
-  revision: 1
   configMapRef:
     name: ceos01-cm
     namespace: default

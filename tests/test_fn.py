@@ -39,7 +39,7 @@ class TestFunctionRunner(unittest.IsolatedAsyncioTestCase):
             "metadata": {"name": "ceos01-cliconfig"},
             "spec": {
                 "endpoint": "ceos01.default.svc.cluster.local",
-                "revision": 1,
+                "version": 1,
                 "configMapRef": {"name": "ceos01-cm", "namespace": "default"},
             },
         }
@@ -126,7 +126,7 @@ class TestFunctionRunner(unittest.IsolatedAsyncioTestCase):
             resource_obj = resource_dict.get("resource", {})
 
             self.assertEqual(resource_obj["apiVersion"], "netclab.dev/v1alpha1")
-            self.assertEqual(resource_obj["kind"], "CliCommand")
+            self.assertEqual(resource_obj["kind"], "CliConfig")
             self.assertEqual(resource_obj["metadata"]["name"], name)
             self.assertEqual(
                 resource_obj["spec"]["endpoint"], composite["spec"]["endpoint"]
