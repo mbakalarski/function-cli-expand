@@ -35,7 +35,7 @@ class TestFunctionRunner(unittest.IsolatedAsyncioTestCase):
 
         composite = {
             "apiVersion": "netclab.dev/v1alpha1",
-            "kind": "CliConfig",
+            "kind": "CliConfigSource",
             "metadata": {"name": "ceos01-config"},
             "spec": {
                 "endpoint": "ceos01.default.svc.cluster.local",
