@@ -42,11 +42,6 @@ jobs:
       - name: Run unit tests
         run: hatch test --all --randomize
 
-
-  # We want to build most packages for the amd64 and arm64 architectures. To
-  # speed this up we build single-platform packages in parallel. We then upload
-  # those packages to GitHub as a build artifact. The push job downloads those
-  # artifacts and pushes them as a single multi-platform package. 
   build:
     runs-on: ubuntu-24.04
     needs:
@@ -68,13 +63,10 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           version: ${{ env.DOCKER_BUILDX_VERSION }}
-          # install: true
 
       - name: Checkout
         uses: actions/checkout@v6
 
-      # We ask Docker to use GitHub Action's native caching support to speed up
-      # the build, per https://docs.docker.com/build/cache/backends/gha/.
       - name: Build Runtime
         id: image
         uses: docker/build-push-action@v6
@@ -105,9 +97,6 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-
-  # This job downloads the single-platform packages built by the build job, and
-  # pushes them as a multi-platform package.
   push:
     if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-24.04
