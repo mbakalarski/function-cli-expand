@@ -92,8 +92,10 @@ class FunctionRunner(grpcv1.FunctionRunnerService):
 
 def hashed_name(observed_xr_name: str, toplevel_cmd: str) -> str:
     """hashed_name function."""
-    prefix = f"{observed_xr_name[:15]}".rstrip('-')
-    suffix = hashlib.sha256(toplevel_cmd.encode("utf-8"), usedforsecurity=False).hexdigest()
+    prefix = f"{observed_xr_name[:15]}".rstrip("-")
+    suffix = hashlib.sha256(
+        toplevel_cmd.encode("utf-8"), usedforsecurity=False
+    ).hexdigest()
     return f"{prefix}-{suffix}".strip()[:63]
 
 
