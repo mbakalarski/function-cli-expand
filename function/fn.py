@@ -48,7 +48,7 @@ class FunctionRunner(grpcv1.FunctionRunnerService):
         fqdn = observed_xr["spec"].get("endpoint")
         config_ref = observed_xr["spec"].get("configMapRef")
         configmap_name = config_ref.get("name")
-        namespace = config_ref.get("namespace", "default")
+        configmap_namespace = config_ref.get("namespace", "default")
 
         response.require_resources(
             rsp,
@@ -56,7 +56,7 @@ class FunctionRunner(grpcv1.FunctionRunnerService):
             api_version="v1",
             kind="ConfigMap",
             match_name=configmap_name,
-            namespace=namespace,
+            namespace=configmap_namespace,
         )
 
         configmap = request.get_required_resource(req, "dynamic-config")
@@ -90,11 +90,11 @@ class FunctionRunner(grpcv1.FunctionRunnerService):
         return rsp
 
 
-def hashed_name(prefix, name: str) -> str:
+def hashed_name(observed_xr_name: str, toplevel_cmd: str) -> str:
     """hashed_name function."""
-    suffix = hashlib.sha256(name.encode("utf-8"), usedforsecurity=False).hexdigest()
-    full = f"{prefix[:15]}-{suffix[:48]}"
-    return full.rstrip("-")[:63]
+    prefix = f"{observed_xr_name[:15]}".rstrip('-')
+    suffix = hashlib.sha256(toplevel_cmd.encode("utf-8"), usedforsecurity=False).hexdigest()
+    return f"{prefix}-{suffix}".strip()[:63]
 
 
 def construct_cliconfig_resource(name: str, fqdn: str, tree: dict) -> dict:
